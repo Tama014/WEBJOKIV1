@@ -129,12 +129,12 @@
             font-size: 18px;
             transition: all 0.3s;
             animation: fadeInUp 1s 0.3s backwards;
-            box-shadow: 0 10px 3px rgba(253, 245, 170, 0.4);
+            box-shadow: 0 10px 30px rgba(253, 245, 170, 0.4);
         }
-            
+
         .cta-button:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(253, 245, 170, 0.4);
+            box-shadow: 0 15px 40px rgba(253, 245, 170, 0.6);
         }
 
         .features {
@@ -229,9 +229,9 @@
 
         .service-item h3 {
             margin-bottom: 10px;
-            color: #fff;
+            color: #FDF5AA;
         }
-        
+
         .service-item p {
             color: #fff;
         }
@@ -255,7 +255,6 @@
             max-width: 1000px;
             margin: 0 auto;
         }
-
 
         .stat-item {
             padding: 30px;
@@ -281,7 +280,7 @@
 
         .why-us h2 {
             text-align: center;
-            font-family: 48px;
+            font-size: 48px;
             margin-bottom: 60px;
             color: #FDF5AA;
         }
@@ -306,7 +305,7 @@
             line-height: 1.8;
             margin-bottom: 15px;
             opacity: 0.95;
-            color:#fff ;
+            color: #fff;
         }
 
         .why-list {
@@ -319,12 +318,13 @@
             margin-bottom: 15px;
             border-radius: 10px;
             backdrop-filter: blur(10px);
+            transition: all 0.3s;
             color: #fff;
         }
 
         .why-list li:hover {
             background: rgba(88, 160, 200, 0.4);
-            transform: translateY(10px);
+            transform: translateX(10px);
         }
 
         .why-list li strong {
@@ -374,7 +374,7 @@
         .contact-btn:hover {
             background: rgba(88, 160, 200, 0.5);
             transform: translateY(-5px);
-            color: #fff;
+            border-color: #FDF5AA;
         }
 
         footer {
@@ -383,7 +383,7 @@
             background: rgba(17, 63, 103, 0.5);
             color: #fff;
         }
-        
+
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -395,7 +395,7 @@
             }
         }
 
-        @keyframes fadeInUP {
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(50px);
