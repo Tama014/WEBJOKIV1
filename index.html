@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCorp - Jasa Joki Terpercaya & Profesional</title>
+    <link rel="icon" type="image/x-icon" href="LOGO JOKI.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #113F67 0%, #34699A 50%, #58A0C8 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(17, 63, 103, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .navbar.scrolled {
+            background: rgba(17, 63, 103, 0.95);
+            padding: 15px 50px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #FDF5AA, #58A0C8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #FDF5AA;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icons a {
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.2);
+        }
+
+        .hero {
+            padding: 150px 50px 100px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s;
+            color: #FDF5AA;
+            text-shadow: 2px 2px 8px rgba(17, 63, 103, 0.5);
+        }
+
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            animation: fadeInUp 1s;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 50px;
+            background: linear-gradient(45deg, #FDF5AA, #58A0C8);
+            color: #113F67;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s;
+            animation: fadeInUp 1s 0.3s backwards;
+            box-shadow: 0 10px 3px rgba(253, 245, 170, 0.4);
+        }
+            
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(253, 245, 170, 0.4);
+        }
+
+        .features {
+            padding: 100px 50px;
+            background: rgba(17, 63, 103, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 60px;
+            color: #FDF5AA;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(88, 160, 200, 0.2);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(88, 160, 200, 0.3);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(88, 160, 200, 0.35);
+            box-shadow: 0 20px 40px rgba(253, 245, 170, 0.3);
+            border-color: #FDF5AA;
+        }
+
+        .feature-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #FDF5AA;
+        }
+
+        .feature-card p {
+            color: #fff;
+        }
+
+        .services {
+            padding: 100px 50px;
+        }
+
+        .services h2 {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 60px;
+            color: #FDF5AA;
+        }
+
+        .service-list {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .service-item {
+            background: rgba(52, 105, 154, 0.3);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .service-item:hover {
+            border-color: #FDF5AA;
+            transform: scale(1.05);
+            background: rgba(52, 105, 154, 0.5);
+        }
+
+        .service-item h3 {
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .service-item p {
+            color: #fff;
+        }
+
+        .stats {
+            padding: 100px 50px;
+            background: rgba(17, 63, 103, 0.4);
+            text-align: center;
+        }
+
+        .stats h2 {
+            font-size: 48px;
+            margin-bottom: 60px;
+            color: #FDF5AA;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+
+        .stat-item {
+            padding: 30px;
+        }
+
+        .stat-number {
+            font-size: 56px;
+            font-weight: bold;
+            color: #FDF5AA;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            opacity: 0.95;
+            color: #fff;
+        }
+
+        .why-us {
+            padding: 100px 50px;
+            background: rgba(52, 105, 154, 0.2);
+        }
+
+        .why-us h2 {
+            text-align: center;
+            font-family: 48px;
+            margin-bottom: 60px;
+            color: #FDF5AA;
+        }
+
+        .why-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+            align-items: center;
+        }
+
+        .why-text h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #FDF5AA;
+        }
+
+        .why-text p {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            opacity: 0.95;
+            color:#fff ;
+        }
+
+        .why-list {
+            list-style: none;
+        }
+
+        .why-list li {
+            padding: 20px;
+            background: rgba(88, 160, 200, 0.25);
+            margin-bottom: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            color: #fff;
+        }
+
+        .why-list li:hover {
+            background: rgba(88, 160, 200, 0.4);
+            transform: translateY(10px);
+        }
+
+        .why-list li strong {
+            color: #FDF5AA;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .contact {
+            padding: 100px 50px;
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-size: 48px;
+            margin-bottom: 30px;
+            color: #FDF5AA;
+        }
+
+        .contact p {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .contact-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .contact-btn {
+            padding: 15px 40px;
+            background: rgba(88, 160, 200, 0.3);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(253, 245, 170, 0.5);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .contact-btn:hover {
+            background: rgba(88, 160, 200, 0.5);
+            transform: translateY(-5px);
+            color: #fff;
+        }
+
+        footer {
+            padding: 30px;
+            text-align: center;
+            background: rgba(17, 63, 103, 0.5);
+            color: #fff;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUP {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 40px;
+            }
+            .hero p {
+                font-size: 18px;
+            }
+            .navbar {
+                padding: 15px 20px;
+            }
+            .nav-links {
+                gap: 15px;
+                font-size: 14px;
+            }
+            .social-icons {
+                display: none;
+            }
+            .why-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="logo">TCorp</div>
+        <ul class="nav-links">
+            <li><a href="#home">Beranda</a></li>
+            <li><a href="#contact">Kontak</a></li>
+            <div class="social-icons">
+                <a href="https://www.instagram.com/tcorp.co/" target="_blank">📷</a>
+                <a href="https://wa.link/1qnoj6" target="_blank">📱</a>
+            </div>
+        </ul>
+    </nav>
+
+    <section class="hero" id="home">
+        <h1 class="floating">Joki Aselole</h1>
+        <p>Profesional • Aman • Terjamin • Hasil Memuaskan</p>
+        <a href="https://wa.link/1qnoj6" class="cta-button">Oder Now!</a>
+    </section>
+
+    <section class="features">
+        <h2>Mengapa Memilih Kami?</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Proses Cepat</h3>
+                <p>Pengerjaan yang efisien dan tepat waktu sesuai deadline yang disepakati</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>100% Aman</h3>
+                <p>Privasi dan keamanan data Anda adalah prioritas utama kami</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⭐</div>
+                <h3>Kualitas Terbaik</h3>
+                <p>Dikerjakan oleh profesional berpengalaman dengan hasil terjamin</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Harga Kompetitif</h3>
+                <p>Harga terjangkau dengan kualitas premium dan hasil maksimal</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Garansi Kepuasan</h3>
+                <p>Revisi gratis hingga Anda puas dengan hasilnya</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Support 24/7</h3>
+                <p>Tim customer service siap membantu Anda kapan saja</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="services" id="services">
+        <h2>Layanan Kami</h2>
+        <div class="service-list">
+            <div class="service-item">
+                <h3>📚 Tugas Kuliah</h3>
+                <p>Essay, makalah, paper, dan berbagai tugas akademik lainnya</p>
+            </div>
+            <div class="service-item">
+                <h3>💻 E-Learning</h3>
+                <p>Tugas E-Learning, Pre-test, Post-test, Diskusi</p>
+            </div>
+
+            <div class="service-item">
+                <h3>🎨 Design</h3>
+                <p>Power Point</p>
+            </div>
+            <div class="service-item">
+                <h3>📝 Karya Tulis</h3>
+                <p>Skripsi dan Artikel</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <h2>Pencapaian Kami</h2>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">1000+</div>
+                <div class="stat-label">Klien Puas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1000+</div>
+                <div class="stat-label">Project Selesai</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Tingkat Kepuasan</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Dukungan Online</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="why-us">
+        <h2>Komitmen Kami</h2>
+        <div class="why-content">
+            <div class="why-text">
+                <h3>Lebih dari Sekadar Jasa</h3>
+                <p>Kami memahami bahwa setiap project adalah investasi penting bagi Anda. Oleh karena itu, kami berkomitmen untuk memberikan yang terbaik dalam setiap aspek layanan kami.</p>
+                <p>Tim profesional kami terdiri dari individu berpengalaman di bidangnya masing-masing, siap membantu mewujudkan kebutuhan Anda dengan hasil maksimal.</p>
+            </div>
+            <ul class="why-list">
+                <li>
+                    <strong>✓ Proses Transparan</strong>
+                    Update progress secara berkala dan komunikasi terbuka
+                </li>
+                <li>
+                    <strong>✓ Keamanan Terjamin</strong>
+                    Data Anda terenkripsi dan dijaga kerahasiaannya
+                </li>
+                <li>
+                    <strong>✓ Tim Berpengalaman</strong>
+                    Profesional dengan track record terbukti
+                </li>
+                <li>
+                    <strong>✓ Harga Fleksibel</strong>
+                    Paket yang dapat disesuaikan dengan budget Anda
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2>Hubungi Kami Sekarang!</h2>
+        <p>Konsultasi gratis dan dapatkan penawaran terbaik</p>
+        <div class="contact-buttons">
+            <a href="https://wa.link/1qnoj6" class="contact-btn" target="_blank">📱 WhatsApp</a>
+            <a href="https://www.instagram.com/tcorp.co/" class="contact-btn" target="_blank">📷 Instagram</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 TCorp. All Rights Reserved. | Anda Malas Kami Bantu</p>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .service-item, .stat-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(50px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
