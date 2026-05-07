@@ -22,6 +22,8 @@
             --line: rgba(255, 255, 255, 0.12);
             --shadow: 0 20px 50px rgba(2, 8, 22, 0.45);
             --radius: 18px;
+            --cursor-x: 50vw;
+            --cursor-y: 22vh;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,6 +37,157 @@
                 radial-gradient(circle at 80% 8%, rgba(71, 102, 187, 0.18), transparent 35%),
                 linear-gradient(180deg, #04060a 0%, #070d18 45%, #05070c 100%);
             overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(420px circle at var(--cursor-x) var(--cursor-y), rgba(224, 194, 122, 0.1), transparent 68%);
+            transition: opacity 260ms ease;
+        }
+
+        .navbar,
+        main,
+        footer {
+            position: relative;
+            z-index: 1;
+            transition: opacity 640ms ease, transform 760ms cubic-bezier(0.2, 0.7, 0.2, 1);
+        }
+
+        body.is-loading .navbar,
+        body.is-loading main,
+        body.is-loading footer {
+            opacity: 0;
+            transform: translateY(16px) scale(0.99);
+        }
+
+        .preloader {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(circle at 20% 18%, rgba(224, 194, 122, 0.14), transparent 36%),
+                radial-gradient(circle at 80% 10%, rgba(72, 103, 188, 0.2), transparent 34%),
+                linear-gradient(180deg, #03050a 0%, #050c16 58%, #04070d 100%);
+            transition: opacity 520ms ease, visibility 520ms ease;
+        }
+
+        .preloader.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .preloader-box {
+            width: min(440px, 92vw);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 28px 26px;
+            background: linear-gradient(165deg, rgba(15, 24, 44, 0.9), rgba(9, 15, 28, 0.84));
+            box-shadow: 0 24px 58px rgba(2, 8, 22, 0.55);
+            text-align: center;
+            animation: loaderFloat 2.8s ease-in-out infinite;
+        }
+
+        .loader-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Sora', sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+        }
+
+        .loader-brand i { color: var(--brand); }
+
+        .loader-ring {
+            width: 84px;
+            height: 84px;
+            margin: 0 auto 16px;
+            border-radius: 999px;
+            border: 2px solid rgba(255, 255, 255, 0.14);
+            border-top-color: var(--brand);
+            border-right-color: rgba(247, 222, 161, 0.8);
+            animation: loaderSpin 1s linear infinite;
+            position: relative;
+        }
+
+        .loader-ring::after {
+            content: '';
+            position: absolute;
+            inset: 16px;
+            border-radius: inherit;
+            border: 2px solid rgba(224, 194, 122, 0.35);
+            animation: loaderPulse 1.8s ease-in-out infinite;
+        }
+
+        .loader-progress {
+            width: min(260px, 78vw);
+            height: 7px;
+            border-radius: 999px;
+            margin: 0 auto 14px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .loader-progress span {
+            display: block;
+            width: 40%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--brand), var(--brand-2));
+            animation: loaderTrack 1.45s ease-in-out infinite;
+        }
+
+        .preloader-box p { color: var(--muted); font-size: 0.95rem; }
+
+        .surface-3d {
+            --surface-rx: 0deg;
+            --surface-ry: 0deg;
+            --surface-lift: 0px;
+            transform: perspective(1200px) rotateX(var(--surface-rx)) rotateY(var(--surface-ry)) translateZ(var(--surface-lift));
+            transform-style: preserve-3d;
+            will-change: transform;
+            transition: transform 260ms ease, box-shadow 260ms ease;
+        }
+
+        .surface-3d.tilt-live {
+            box-shadow: 0 24px 56px rgba(2, 8, 22, 0.42);
+        }
+
+        .depth-1,
+        .depth-2 {
+            transform-style: preserve-3d;
+        }
+
+        .depth-1 { transform: translateZ(14px); }
+        .depth-2 { transform: translateZ(24px); }
+
+        @keyframes loaderSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes loaderPulse {
+            0%, 100% { transform: scale(1); opacity: 0.45; }
+            50% { transform: scale(1.08); opacity: 0.9; }
+        }
+
+        @keyframes loaderTrack {
+            0% { transform: translateX(-140%); }
+            100% { transform: translateX(340%); }
+        }
+
+        @keyframes loaderFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
         }
 
         .container { width: min(1160px, 92vw); margin: 0 auto; }
@@ -95,7 +248,7 @@
         .nav-links a:hover::after { transform: scaleX(1); }
 
         .hero { min-height: 100vh; display: grid; align-items: center; padding: 120px 0 60px; }
-        .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
+        .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 62px; align-items: center; }
 
         .eyebrow {
             display: inline-flex;
@@ -159,24 +312,92 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
-        .stat b { display: block; font-size: 1.2rem; margin-bottom: 4px; }
+        .stat b { display: block; font-size: 1.2rem; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
         .stat span { color: var(--muted); font-size: 0.92rem; }
 
-        .hero-cards { position: relative; min-height: 440px; }
+        .hero-cards {
+            position: relative;
+            min-height: clamp(500px, 56vw, 620px);
+            isolation: isolate;
+            perspective: 1600px;
+        }
         .floating-card {
+            --tx: -50%;
+            --ty: -50%;
+            --rz: 0deg;
+            --rx: 0deg;
+            --ry: 0deg;
+            --card-scale: 0.92;
+            --lift: 0px;
+            --gloss-x: 50%;
+            --gloss-y: 50%;
             position: absolute;
-            width: min(320px, 82vw);
-            padding: 24px;
+            width: clamp(230px, 28vw, 300px);
+            padding: clamp(20px, 2vw, 24px);
             border: 1px solid var(--line);
             border-radius: var(--radius);
             background: linear-gradient(165deg, rgba(13, 20, 38, 0.95), rgba(10, 16, 30, 0.78));
             box-shadow: var(--shadow);
-            animation: float 7s ease-in-out infinite;
+            top: 50%;
+            left: 50%;
+            opacity: 0;
+            transform: translate(var(--tx), var(--ty)) rotateZ(var(--rz)) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--card-scale)) translateZ(var(--lift));
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            overflow: hidden;
+            will-change: transform;
+            transition: transform 780ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 460ms ease, box-shadow 260ms ease;
         }
 
-        .floating-card:nth-child(1) { top: 14px; right: 8px; }
-        .floating-card:nth-child(2) { top: 175px; left: 0; animation-delay: 1.2s; }
-        .floating-card:nth-child(3) { top: 290px; right: 32px; animation-delay: 2.1s; }
+        .floating-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(circle at var(--gloss-x) var(--gloss-y), rgba(255, 255, 255, 0.24), transparent 52%);
+            opacity: 0;
+            transition: opacity 260ms ease;
+            pointer-events: none;
+        }
+
+        .floating-card:nth-child(1) { z-index: 3; }
+        .floating-card:nth-child(2) { z-index: 2; transition-delay: 95ms; }
+        .floating-card:nth-child(3) { z-index: 1; transition-delay: 180ms; }
+
+        .hero-cards.cards-open .floating-card { opacity: 1; --card-scale: 1; }
+        .hero-cards.cards-open .floating-card:nth-child(1) {
+            --tx: calc(-50% + 138px);
+            --ty: calc(-50% - 196px);
+            --rz: 8deg;
+        }
+        .hero-cards.cards-open .floating-card:nth-child(2) {
+            --tx: calc(-50% + 18px);
+            --ty: calc(-50% + 34px);
+            --rz: -6deg;
+        }
+        .hero-cards.cards-open .floating-card:nth-child(3) {
+            --tx: calc(-50% + 132px);
+            --ty: calc(-50% + 252px);
+            --rz: 5.5deg;
+        }
+
+        .floating-card i,
+        .floating-card h4,
+        .floating-card p {
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .floating-card i { transform: translateZ(40px); }
+        .floating-card h4 { transform: translateZ(30px); }
+        .floating-card p { transform: translateZ(22px); }
+
+        .floating-card.tilt-active {
+            transition: transform 140ms ease, opacity 460ms ease, box-shadow 220ms ease;
+            box-shadow: 0 30px 70px rgba(3, 8, 22, 0.55);
+        }
+
+        .floating-card.tilt-active::after { opacity: 0.75; }
 
         .floating-card i { color: var(--brand); font-size: 1.4rem; margin-bottom: 10px; }
         .floating-card h4 { font-size: 1.7rem; margin-bottom: 8px; font-family: 'Sora', sans-serif; }
@@ -187,34 +408,77 @@
         .section-head h2 { font-family: 'Sora', sans-serif; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -0.03em; margin-bottom: 10px; }
         .section-head p { color: var(--muted); max-width: 640px; }
 
-        .feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+        /* Marquee Scroller Base */
+        .marquee-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 20px 0;
+            display: flex;
+            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 24px;
+            width: max-content;
+            animation: scroll-left 40s linear infinite;
+        }
+        
+        .marquee-track.reverse {
+            animation: scroll-right 40s linear infinite;
+        }
+
+        .marquee-wrapper:hover .marquee-track {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-50% - 12px)); } /* 12px is half the gap */
+        }
+
+        @keyframes scroll-right {
+            0% { transform: translateX(calc(-50% - 12px)); }
+            100% { transform: translateX(0); }
+        }
+
         .feature-card {
+            width: 320px;
+            flex-shrink: 0;
             border: 1px solid var(--line);
             background: linear-gradient(180deg, rgba(20, 31, 58, 0.56), rgba(13, 21, 39, 0.62));
             border-radius: var(--radius);
             padding: 26px;
             transition: transform 220ms ease, border-color 220ms ease;
+            position: relative;
+            transform-style: preserve-3d;
         }
 
         .feature-card:hover { transform: translateY(-5px); border-color: rgba(224, 194, 122, 0.45); }
-        .feature-card .icon { color: var(--brand); font-size: 1.45rem; margin-bottom: 14px; }
-        .feature-card h3 { margin-bottom: 8px; font-size: 1.15rem; }
-        .feature-card p { color: var(--muted); line-height: 1.7; }
+        .feature-card .icon { color: var(--brand); font-size: 1.45rem; margin-bottom: 14px; transform: translateZ(30px); }
+        .feature-card h3 { margin-bottom: 8px; font-size: 1.15rem; transform: translateZ(20px); }
+        .feature-card p { color: var(--muted); line-height: 1.7; transform: translateZ(10px); }
 
-        .services { background: linear-gradient(180deg, rgba(7, 11, 21, 0.2), rgba(7, 11, 21, 0.5)); }
-        .service-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+        .services { background: linear-gradient(180deg, rgba(7, 11, 21, 0.2), rgba(7, 11, 21, 0.5)); overflow: hidden; }
+        
         .service-item {
+            width: 360px;
+            flex-shrink: 0;
             border: 1px solid var(--line);
             border-radius: var(--radius);
             padding: 24px;
             background: rgba(17, 26, 47, 0.65);
-            transition: 220ms ease;
+            transition: border-color 220ms ease;
+            position: relative;
+            transform-style: preserve-3d;
         }
 
-        .service-item:hover { transform: translateY(-4px); border-color: rgba(224, 194, 122, 0.45); }
-        .service-item h3 { display: flex; align-items: center; gap: 11px; font-size: 1.12rem; margin-bottom: 10px; }
+        .service-item:hover { border-color: rgba(224, 194, 122, 0.45); }
+        .service-item h3 { display: flex; align-items: center; gap: 11px; font-size: 1.12rem; margin-bottom: 10px; transform: translateZ(30px); }
         .service-item i { color: var(--brand); }
-        .service-item p { color: var(--muted); line-height: 1.7; }
+        .service-item p { color: var(--muted); line-height: 1.7; transform: translateZ(15px); }
 
         .contact-panel {
             border: 1px solid var(--line);
@@ -233,29 +497,60 @@
         .reveal { opacity: 0; transform: translateY(16px); transition: 550ms ease; }
         .reveal.show { opacity: 1; transform: translateY(0); }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-14px); }
-        }
-
         @media (max-width: 1024px) {
             .hero-grid { grid-template-columns: 1fr; }
-            .hero-cards { min-height: 360px; margin-top: 12px; }
-            .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .service-list { grid-template-columns: 1fr; }
+            .hero-cards { min-height: 560px; margin-top: 18px; }
+            .hero-cards.cards-open .floating-card:nth-child(1) {
+                --tx: calc(-50% + 112px);
+                --ty: calc(-50% - 148px);
+                --rz: 7deg;
+            }
+            .hero-cards.cards-open .floating-card:nth-child(2) {
+                --tx: calc(-50% + 16px);
+                --ty: calc(-50% + 28px);
+                --rz: -5.5deg;
+            }
+            .hero-cards.cards-open .floating-card:nth-child(3) {
+                --tx: calc(-50% + 98px);
+                --ty: calc(-50% + 210px);
+                --rz: 4.5deg;
+            }
         }
 
         @media (max-width: 760px) {
             .nav-links { display: none; }
             .hero { padding-top: 100px; }
             .stats { grid-template-columns: 1fr; }
-            .feature-grid { grid-template-columns: 1fr; }
-            .floating-card { position: static; width: 100%; animation: none; margin-bottom: 12px; }
+            .feature-card, .service-item { width: 280px; }
+            .floating-card {
+                position: static;
+                width: 100%;
+                margin-bottom: 14px;
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+            .floating-card::after { display: none; }
             .hero-cards { min-height: 0; }
+            .surface-3d,
+            .depth-1,
+            .depth-2 {
+                transform: none !important;
+                transition: none;
+            }
         }
     </style>
 </head>
-<body>
+<body class="is-loading">
+    <div class="preloader" id="preloader" aria-hidden="true">
+        <div class="preloader-box">
+            <div class="loader-brand"><i class="fa-solid fa-pen-nib"></i> TCorp</div>
+            <div class="loader-ring"></div>
+            <div class="loader-progress"><span></span></div>
+            <p>Menyiapkan pengalaman terbaik untuk Anda...</p>
+        </div>
+    </div>
+
     <nav class="navbar" id="navbar">
         <div class="container nav-inner">
             <a href="#home" class="logo"><i class="fa-solid fa-pen-nib"></i> TCorp</a>
@@ -271,7 +566,7 @@
     <main>
         <section class="hero" id="home">
             <div class="container hero-grid">
-                <div class="reveal">
+                <div class="reveal hero-intro">
                     <span class="eyebrow"><i class="fa-solid fa-sparkles"></i> Trusted Academic Partner</span>
                     <h1>Tugas menumpuk? <span class="accent">Kami yang urus.</span></h1>
                     <p>Layanan pendampingan tugas akademik yang cepat, rapi, dan confidential. Anda fokus ke prioritas utama, tim kami handle detail teknisnya.</p>
@@ -280,9 +575,9 @@
                         <a href="#services" class="btn btn-soft">Lihat Layanan</a>
                     </div>
                     <div class="stats">
-                        <div class="stat"><b>1.200+</b><span>Project terselesaikan</span></div>
-                        <div class="stat"><b>24/7</b><span>Dukungan pelanggan</span></div>
-                        <div class="stat"><b>98%</b><span>Tingkat kepuasan klien</span></div>
+                        <div class="stat surface-3d"><b class="stat-number depth-2" data-target="1200" data-suffix="+">0+</b><span class="depth-1">Project terselesaikan</span></div>
+                        <div class="stat surface-3d"><b class="stat-number depth-2" data-target="24" data-suffix="/7">0/7</b><span class="depth-1">Dukungan pelanggan</span></div>
+                        <div class="stat surface-3d"><b class="stat-number depth-2" data-target="98" data-suffix="%">0%</b><span class="depth-1">Tingkat kepuasan klien</span></div>
                     </div>
                 </div>
                 <div class="hero-cards reveal">
@@ -311,13 +606,24 @@
                     <h2>Kenapa banyak klien memilih TCorp?</h2>
                     <p>Kami menggabungkan quality control, komunikasi responsif, dan workflow profesional agar hasil akhir tetap konsisten.</p>
                 </div>
-                <div class="feature-grid">
-                    <article class="feature-card reveal"><div class="icon"><i class="fa-solid fa-bolt"></i></div><h3>Respons Cepat</h3><p>Brief diproses cepat dengan update status yang transparan.</p></article>
-                    <article class="feature-card reveal"><div class="icon"><i class="fa-solid fa-lock"></i></div><h3>Privasi Terjamin</h3><p>Data klien dikelola secara rahasia dan aman di setiap tahap.</p></article>
-                    <article class="feature-card reveal"><div class="icon"><i class="fa-solid fa-medal"></i></div><h3>Standar Premium</h3><p>Hasil disusun rapi, detail, dan menyesuaikan kebutuhan akademik.</p></article>
-                    <article class="feature-card reveal"><div class="icon"><i class="fa-solid fa-rotate"></i></div><h3>Revisi Jelas</h3><p>Sesi revisi tersedia sesuai scope untuk memastikan hasil pas.</p></article>
-                    <article class="feature-card reveal"><div class="icon"><i class="fa-solid fa-headset"></i></div><h3>Support 24/7</h3><p>Tim selalu siap membantu ketika Anda butuh follow-up cepat.</p></article>
-                    <article class="feature-card reveal"><div class="icon"><i class="fa-solid fa-chart-line"></i></div><h3>Proses Terukur</h3><p>Alur kerja terstruktur dari briefing hingga final delivery.</p></article>
+            </div>
+            
+            <div class="marquee-wrapper reveal">
+                <div class="marquee-track">
+                    <!-- Set 1 -->
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-bolt"></i></div><h3>Respons Cepat</h3><p>Brief diproses cepat dengan update status yang transparan.</p></article>
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-lock"></i></div><h3>Privasi Terjamin</h3><p>Data klien dikelola secara rahasia dan aman di setiap tahap.</p></article>
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-medal"></i></div><h3>Standar Premium</h3><p>Hasil disusun rapi, detail, dan menyesuaikan kebutuhan akademik.</p></article>
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-rotate"></i></div><h3>Revisi Jelas</h3><p>Sesi revisi tersedia sesuai scope untuk memastikan hasil pas.</p></article>
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-headset"></i></div><h3>Support 24/7</h3><p>Tim selalu siap membantu ketika Anda butuh follow-up cepat.</p></article>
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-chart-line"></i></div><h3>Proses Terukur</h3><p>Alur kerja terstruktur dari briefing hingga final delivery.</p></article>
+                    <!-- Set 2 (Duplicate for infinite scroll) -->
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-bolt"></i></div><h3>Respons Cepat</h3><p>Brief diproses cepat dengan update status yang transparan.</p></article>
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-lock"></i></div><h3>Privasi Terjamin</h3><p>Data klien dikelola secara rahasia dan aman di setiap tahap.</p></article>
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-medal"></i></div><h3>Standar Premium</h3><p>Hasil disusun rapi, detail, dan menyesuaikan kebutuhan akademik.</p></article>
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-rotate"></i></div><h3>Revisi Jelas</h3><p>Sesi revisi tersedia sesuai scope untuk memastikan hasil pas.</p></article>
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-headset"></i></div><h3>Support 24/7</h3><p>Tim selalu siap membantu ketika Anda butuh follow-up cepat.</p></article>
+                    <article class="feature-card surface-3d"><div class="icon"><i class="fa-solid fa-chart-line"></i></div><h3>Proses Terukur</h3><p>Alur kerja terstruktur dari briefing hingga final delivery.</p></article>
                 </div>
             </div>
         </section>
@@ -328,22 +634,31 @@
                     <h2>Layanan profesional untuk kebutuhan akademik</h2>
                     <p>Setiap layanan ditangani berdasarkan brief, deadline, dan standar kualitas yang Anda tetapkan.</p>
                 </div>
-                <div class="service-list">
-                    <article class="service-item reveal"><h3><i class="fa-solid fa-book-open"></i> Tugas Kuliah</h3><p>Essay, makalah, paper, dan tugas akademik lain dengan referensi relevan.</p></article>
-                    <article class="service-item reveal"><h3><i class="fa-solid fa-laptop-code"></i> E-learning</h3><p>Diskusi, kuis, pre-test/post-test, dan tugas platform pembelajaran online.</p></article>
-                    <article class="service-item reveal"><h3><i class="fa-solid fa-palette"></i> Desain Presentasi</h3><p>Slide presentasi clean dan profesional agar pesan tersampaikan lebih kuat.</p></article>
-                    <article class="service-item reveal"><h3><i class="fa-solid fa-pen-ruler"></i> Karya Tulis Ilmiah</h3><p>Artikel ilmiah, laporan, dan dokumen akademik dengan struktur rapi.</p></article>
+            </div>
+
+            <div class="marquee-wrapper reveal">
+                <div class="marquee-track reverse">
+                    <!-- Set 1 -->
+                    <article class="service-item surface-3d"><h3><i class="fa-solid fa-book-open"></i> Tugas Kuliah</h3><p>Essay, makalah, paper, dan tugas akademik lain dengan referensi relevan.</p></article>
+                    <article class="service-item surface-3d"><h3><i class="fa-solid fa-laptop-code"></i> E-learning</h3><p>Diskusi, kuis, pre-test/post-test, dan tugas platform pembelajaran online.</p></article>
+                    <article class="service-item surface-3d"><h3><i class="fa-solid fa-palette"></i> Desain Presentasi</h3><p>Slide presentasi clean dan profesional agar pesan tersampaikan lebih kuat.</p></article>
+                    <article class="service-item surface-3d"><h3><i class="fa-solid fa-pen-ruler"></i> Karya Tulis Ilmiah</h3><p>Artikel ilmiah, laporan, dan dokumen akademik dengan struktur rapi.</p></article>
+                    <!-- Set 2 (Duplicate for infinite scroll) -->
+                    <article class="service-item surface-3d"><h3><i class="fa-solid fa-book-open"></i> Tugas Kuliah</h3><p>Essay, makalah, paper, dan tugas akademik lain dengan referensi relevan.</p></article>
+                    <article class="service-item surface-3d"><h3><i class="fa-solid fa-laptop-code"></i> E-learning</h3><p>Diskusi, kuis, pre-test/post-test, dan tugas platform pembelajaran online.</p></article>
+                    <article class="service-item surface-3d"><h3><i class="fa-solid fa-palette"></i> Desain Presentasi</h3><p>Slide presentasi clean dan profesional agar pesan tersampaikan lebih kuat.</p></article>
+                    <article class="service-item surface-3d"><h3><i class="fa-solid fa-pen-ruler"></i> Karya Tulis Ilmiah</h3><p>Artikel ilmiah, laporan, dan dokumen akademik dengan struktur rapi.</p></article>
                 </div>
             </div>
         </section>
 
         <section id="contact">
             <div class="container">
-                <div class="contact-panel reveal">
+                <div class="contact-panel surface-3d reveal">
                     <div class="section-head" style="margin-bottom: 16px;">
-                        <h2>Siap mulai tanpa stres deadline?</h2>
+                        <h2 class="depth-2">Siap mulai tanpa stres deadline?</h2>
                     </div>
-                    <p>Konsultasikan kebutuhan Anda sekarang. Tim kami bantu susun solusi yang tepat dari scope kecil sampai project kompleks.</p>
+                    <p class="depth-1">Konsultasikan kebutuhan Anda sekarang. Tim kami bantu susun solusi yang tepat dari scope kecil sampai project kompleks.</p>
                     <div class="contact-buttons">
                         <a href="https://wa.link/1qnoj6" target="_blank" class="btn btn-primary"><i class="fa-brands fa-whatsapp"></i> Chat WhatsApp</a>
                         <a href="#home" class="btn btn-soft"><i class="fa-solid fa-arrow-up"></i> Kembali ke Atas</a>
@@ -369,16 +684,164 @@
             }
         });
 
+        const statNumbers = document.querySelectorAll('.stat-number');
+        let statAnimated = false;
+
+        const animateStats = () => {
+            if (statAnimated) return;
+            statAnimated = true;
+
+            const duration = 1400;
+            const formatter = new Intl.NumberFormat('id-ID');
+
+            statNumbers.forEach((el, index) => {
+                const target = Number(el.dataset.target || 0);
+                const suffix = el.dataset.suffix || '';
+                const delay = index * 130;
+                const startTime = performance.now() + delay;
+
+                const tick = (now) => {
+                    if (now < startTime) {
+                        requestAnimationFrame(tick);
+                        return;
+                    }
+
+                    const progress = Math.min((now - startTime) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    const value = Math.round(target * eased);
+
+                    el.textContent = `${formatter.format(value)}${suffix}`;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(tick);
+                    }
+                };
+
+                requestAnimationFrame(tick);
+            });
+        };
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('show');
+                    if (entry.target.classList.contains('hero-cards')) {
+                        setTimeout(() => entry.target.classList.add('cards-open'), 120);
+                    }
+                    if (entry.target.classList.contains('hero-intro')) {
+                        animateStats();
+                    }
                     observer.unobserve(entry.target);
                 }
             });
         }, { threshold: 0.16 });
 
         document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+        const initCardTilt = () => {
+            const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!finePointer || reduceMotion) return;
+
+            document.querySelectorAll('.floating-card').forEach((card) => {
+                const resetTilt = () => {
+                    card.style.setProperty('--rx', '0deg');
+                    card.style.setProperty('--ry', '0deg');
+                    card.style.setProperty('--lift', '0px');
+                    card.style.setProperty('--gloss-x', '50%');
+                    card.style.setProperty('--gloss-y', '50%');
+                    card.classList.remove('tilt-active');
+                };
+
+                card.addEventListener('pointermove', (event) => {
+                    const rect = card.getBoundingClientRect();
+                    const px = (event.clientX - rect.left) / rect.width;
+                    const py = (event.clientY - rect.top) / rect.height;
+                    const rotateX = (0.5 - py) * 14;
+                    const rotateY = (px - 0.5) * 16;
+
+                    card.classList.add('tilt-active');
+                    card.style.setProperty('--rx', `${rotateX.toFixed(2)}deg`);
+                    card.style.setProperty('--ry', `${rotateY.toFixed(2)}deg`);
+                    card.style.setProperty('--lift', '18px');
+                    card.style.setProperty('--gloss-x', `${(px * 100).toFixed(1)}%`);
+                    card.style.setProperty('--gloss-y', `${(py * 100).toFixed(1)}%`);
+                });
+
+                card.addEventListener('pointerleave', resetTilt);
+                card.addEventListener('pointercancel', resetTilt);
+            });
+        };
+
+        const initGlobal3D = () => {
+            const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!finePointer || reduceMotion) return;
+
+            document.querySelectorAll('.surface-3d').forEach((el) => {
+                const resetTilt = () => {
+                    el.style.setProperty('--surface-rx', '0deg');
+                    el.style.setProperty('--surface-ry', '0deg');
+                    el.style.setProperty('--surface-lift', '0px');
+                    el.classList.remove('tilt-live');
+                };
+
+                el.addEventListener('pointermove', (event) => {
+                    const rect = el.getBoundingClientRect();
+                    const px = (event.clientX - rect.left) / rect.width;
+                    const py = (event.clientY - rect.top) / rect.height;
+                    
+                    // Intensify tilt for marquee cards, keep subtle for others
+                    const isCard = el.classList.contains('feature-card') || el.classList.contains('service-item');
+                    const intensityX = isCard ? 18 : 8;
+                    const intensityY = isCard ? 22 : 10;
+                    
+                    const rotateX = (0.5 - py) * intensityX;
+                    const rotateY = (px - 0.5) * intensityY;
+
+                    el.classList.add('tilt-live');
+                    el.style.setProperty('--surface-rx', `${rotateX.toFixed(2)}deg`);
+                    el.style.setProperty('--surface-ry', `${rotateY.toFixed(2)}deg`);
+                    el.style.setProperty('--surface-lift', isCard ? '16px' : '8px');
+                });
+
+                el.addEventListener('pointerleave', resetTilt);
+                el.addEventListener('pointercancel', resetTilt);
+            });
+        };
+
+        const initAmbientCursorLight = () => {
+            const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            if (!finePointer) return;
+
+            window.addEventListener('pointermove', (event) => {
+                document.documentElement.style.setProperty('--cursor-x', `${event.clientX}px`);
+                document.documentElement.style.setProperty('--cursor-y', `${event.clientY}px`);
+            }, { passive: true });
+        };
+
+        const initPreloader = () => {
+            const preloader = document.getElementById('preloader');
+            if (!preloader) return;
+
+            if (document.readyState === 'complete') {
+                preloader.classList.add('hide');
+                document.body.classList.remove('is-loading');
+                return;
+            }
+
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    preloader.classList.add('hide');
+                    document.body.classList.remove('is-loading');
+                }, 520);
+            });
+        };
+
+        initCardTilt();
+        initGlobal3D();
+        initAmbientCursorLight();
+        initPreloader();
     </script>
 </body>
 </html>
