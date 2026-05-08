@@ -430,7 +430,7 @@
             animation: scroll-right 40s linear infinite;
         }
 
-        .marquee-wrapper:hover .marquee-track {
+        .marquee-wrapper:not(.draggable):hover .marquee-track {
             animation-play-state: paused;
         }
 
@@ -462,20 +462,56 @@
         .feature-card p { color: var(--muted); line-height: 1.7; transform: translateZ(10px); }
 
         .services { background: linear-gradient(180deg, rgba(7, 11, 21, 0.2), rgba(7, 11, 21, 0.5)); overflow: hidden; }
+
+        /* Draggable Marquee for Services */
+        .marquee-wrapper.draggable {
+            cursor: grab;
+            user-select: none;
+        }
+
+        .marquee-wrapper.draggable.is-dragging {
+            cursor: grabbing;
+        }
+
+        .marquee-wrapper.draggable .marquee-track {
+            animation: none !important;
+            will-change: transform;
+        }
+
+        .swipe-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 4px;
+            opacity: 0.7;
+            animation: swipeHintPulse 2.5s ease-in-out infinite;
+        }
+
+        .swipe-hint i { font-size: 1rem; color: var(--brand); }
+
+        @keyframes swipeHintPulse {
+            0%, 100% { opacity: 0.7; transform: translateX(0); }
+            50% { opacity: 1; transform: translateX(6px); }
+        }
         
         .service-item {
             width: 360px;
+            min-width: 360px;
             flex-shrink: 0;
             border: 1px solid var(--line);
             border-radius: var(--radius);
             padding: 24px;
             background: rgba(17, 26, 47, 0.65);
-            transition: border-color 220ms ease;
+            transition: border-color 220ms ease, transform 220ms ease;
             position: relative;
             transform-style: preserve-3d;
+            scroll-snap-align: start;
         }
 
-        .service-item:hover { border-color: rgba(224, 194, 122, 0.45); }
+        .service-item:hover { border-color: rgba(224, 194, 122, 0.45); transform: translateY(-4px); }
         .service-item h3 { display: flex; align-items: center; gap: 11px; font-size: 1.12rem; margin-bottom: 10px; transform: translateZ(30px); }
         .service-item i { color: var(--brand); }
         .service-item p { color: var(--muted); line-height: 1.7; transform: translateZ(15px); }
@@ -521,7 +557,7 @@
             .nav-links { display: none; }
             .hero { padding-top: 100px; }
             .stats { grid-template-columns: 1fr; }
-            .feature-card, .service-item { width: 280px; }
+            .feature-card, .service-item { width: 280px; min-width: 280px; }
             .floating-card {
                 position: static;
                 width: 100%;
@@ -636,19 +672,24 @@
                 </div>
             </div>
 
-            <div class="marquee-wrapper reveal">
-                <div class="marquee-track reverse">
+            <div class="marquee-wrapper draggable reveal" id="servicesMarquee">
+                <div class="marquee-track reverse" id="servicesTrack">
                     <!-- Set 1 -->
                     <article class="service-item surface-3d"><h3><i class="fa-solid fa-book-open"></i> Tugas Kuliah</h3><p>Essay, makalah, paper, dan tugas akademik lain dengan referensi relevan.</p></article>
                     <article class="service-item surface-3d"><h3><i class="fa-solid fa-laptop-code"></i> E-learning</h3><p>Diskusi, kuis, pre-test/post-test, dan tugas platform pembelajaran online.</p></article>
                     <article class="service-item surface-3d"><h3><i class="fa-solid fa-palette"></i> Desain Presentasi</h3><p>Slide presentasi clean dan profesional agar pesan tersampaikan lebih kuat.</p></article>
                     <article class="service-item surface-3d"><h3><i class="fa-solid fa-pen-ruler"></i> Karya Tulis Ilmiah</h3><p>Artikel ilmiah, laporan, dan dokumen akademik dengan struktur rapi.</p></article>
+                    <article class="service-item surface-3d"><h3><i class="fa-solid fa-calculator"></i> Tugas Matematika</h3><p>Penyelesaian soal matematika, statistik, dan analisis data secara akurat.</p></article>
                     <!-- Set 2 (Duplicate for infinite scroll) -->
                     <article class="service-item surface-3d"><h3><i class="fa-solid fa-book-open"></i> Tugas Kuliah</h3><p>Essay, makalah, paper, dan tugas akademik lain dengan referensi relevan.</p></article>
                     <article class="service-item surface-3d"><h3><i class="fa-solid fa-laptop-code"></i> E-learning</h3><p>Diskusi, kuis, pre-test/post-test, dan tugas platform pembelajaran online.</p></article>
                     <article class="service-item surface-3d"><h3><i class="fa-solid fa-palette"></i> Desain Presentasi</h3><p>Slide presentasi clean dan profesional agar pesan tersampaikan lebih kuat.</p></article>
                     <article class="service-item surface-3d"><h3><i class="fa-solid fa-pen-ruler"></i> Karya Tulis Ilmiah</h3><p>Artikel ilmiah, laporan, dan dokumen akademik dengan struktur rapi.</p></article>
+                    <article class="service-item surface-3d"><h3><i class="fa-solid fa-calculator"></i> Tugas Matematika</h3><p>Penyelesaian soal matematika, statistik, dan analisis data secara akurat.</p></article>
                 </div>
+            </div>
+            <div class="container">
+                <div class="swipe-hint"><i class="fa-solid fa-hand-pointer"></i> Geser untuk melihat lebih banyak</div>
             </div>
         </section>
 
@@ -838,10 +879,141 @@
             });
         };
 
+        /* ===== Draggable Marquee for Services (JS-driven) ===== */
+        const initDraggableMarquee = () => {
+            const wrapper = document.getElementById('servicesMarquee');
+            const track = document.getElementById('servicesTrack');
+            const hintEl = document.querySelector('.swipe-hint');
+
+            if (!wrapper || !track) return;
+
+            // State
+            let position = 0;                // current translateX position
+            let autoSpeed = 0.5;             // px per frame (auto-scroll speed, positive = scroll right/reverse direction)
+            let isHovering = false;
+            let isDragging = false;
+            let dragStartX = 0;
+            let dragStartPos = 0;
+            let totalDragDistance = 0;        // track total drag distance for hint
+            let hintHidden = false;
+            let animFrameId = null;
+
+            // Calculate half-width (one set of items) for infinite loop reset
+            const getHalfWidth = () => {
+                const items = track.querySelectorAll('.service-item');
+                const halfCount = items.length / 2;
+                let totalWidth = 0;
+                for (let i = 0; i < halfCount; i++) {
+                    totalWidth += items[i].offsetWidth + 24; // 24 = gap
+                }
+                return totalWidth;
+            };
+
+            // Animation loop
+            const animate = () => {
+                if (!isDragging && !isHovering) {
+                    position += autoSpeed; // positive = moves right (reverse marquee effect)
+                }
+
+                // Infinite loop: reset when past half
+                const halfW = getHalfWidth();
+                if (halfW > 0) {
+                    if (position >= 0) {
+                        position -= halfW;
+                    } else if (position <= -halfW) {
+                        position += halfW;
+                    }
+                }
+
+                track.style.transform = `translateX(${position}px)`;
+                animFrameId = requestAnimationFrame(animate);
+            };
+
+            // Start the auto-scroll immediately
+            // Initial position: start from negative half (like CSS scroll-right keyframe start)
+            position = -(getHalfWidth());
+            animate();
+
+            // === Mouse drag ===
+            wrapper.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                dragStartX = e.pageX;
+                dragStartPos = position;
+                totalDragDistance = 0;
+                wrapper.classList.add('is-dragging');
+                e.preventDefault();
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const dx = e.pageX - dragStartX;
+                totalDragDistance = Math.abs(dx);
+                position = dragStartPos + dx;
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (!isDragging) return;
+                isDragging = false;
+                wrapper.classList.remove('is-dragging');
+
+                // Hide hint only if user actually dragged (not just clicked)
+                if (totalDragDistance > 10) {
+                    hideHint();
+                }
+            });
+
+            // === Touch drag ===
+            wrapper.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                dragStartX = e.touches[0].pageX;
+                dragStartPos = position;
+                totalDragDistance = 0;
+                wrapper.classList.add('is-dragging');
+            }, { passive: true });
+
+            wrapper.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const dx = e.touches[0].pageX - dragStartX;
+                totalDragDistance = Math.abs(dx);
+                position = dragStartPos + dx;
+            }, { passive: true });
+
+            wrapper.addEventListener('touchend', () => {
+                if (!isDragging) return;
+                isDragging = false;
+                wrapper.classList.remove('is-dragging');
+
+                if (totalDragDistance > 10) {
+                    hideHint();
+                }
+            });
+
+            // === Hover pause ===
+            wrapper.addEventListener('mouseenter', () => { isHovering = true; });
+            wrapper.addEventListener('mouseleave', () => {
+                isHovering = false;
+                // If drag ended outside wrapper, clean up
+                if (isDragging) {
+                    isDragging = false;
+                    wrapper.classList.remove('is-dragging');
+                }
+            });
+
+            // === Hide hint (only after real drag) ===
+            const hideHint = () => {
+                if (hintHidden || !hintEl) return;
+                hintHidden = true;
+                hintEl.style.transition = 'opacity 400ms ease';
+                hintEl.style.opacity = '0';
+                setTimeout(() => { hintEl.style.display = 'none'; }, 420);
+            };
+        };
+
         initCardTilt();
         initGlobal3D();
         initAmbientCursorLight();
         initPreloader();
+        initDraggableMarquee();
     </script>
 </body>
 </html>
